@@ -1,0 +1,154 @@
+// Copyright 2018 The Casbin Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+import {Adapter, Helper, Model} from 'casbin';
+import {CasbinRule} from './casbinRule';
+import {Connection, ConnectionOptions, createConnection} from 'typeorm';
+
+/**
+ * TypeORMAdapter represents the TypeORM adapter for policy storage.
+ */
+export default class TypeORMAdapter implements Adapter {
+    private option: ConnectionOptions;
+    private typeorm: Connection;
+
+    private constructor(option: ConnectionOptions) {
+        this.option = option;
+    }
+
+    /**
+     * newAdapter is the constructor.
+     * @param option typeorm connection option
+     */
+    public static async newAdapter(option: ConnectionOptions) {
+        const a = new TypeORMAdapter(
+            Object.assign(option,
+                {
+                    entities: [CasbinRule],
+                    synchronize: true
+                }));
+        await a.open();
+        return a;
+    }
+
+    private async open() {
+        this.typeorm = await createConnection(this.option);
+        if (!this.typeorm.isConnected) {
+            await this.typeorm.connect();
+        }
+    }
+
+    public async close() {
+        if (this.typeorm.isConnected) {
+            await this.typeorm.close();
+        }
+    }
+
+    private async clearTable() {
+        await this.typeorm.getRepository(CasbinRule).clear();
+    }
+
+    private loadPolicyLine(line: CasbinRule, model: Model) {
+        const result = line.ptype + ', ' + [line.v0, line.v1, line.v2, line.v3, line.v4, line.v5].filter(n => n).join(', ');
+        Helper.loadPolicyLine(result, model);
+    }
+
+    /**
+     * loadPolicy loads all policy rules from the storage.
+     */
+    public async loadPolicy(model: Model) {
+        const lines = await CasbinRule.find();
+        for (const line of lines) {
+            this.loadPolicyLine(line, model);
+        }
+    }
+
+    private savePolicyLine(ptype: string, rule: string[]): CasbinRule {
+        const line = new CasbinRule();
+
+        line.ptype = ptype;
+        if (rule.length > 0) {
+            line.v0 = rule[0];
+        }
+        if (rule.length > 1) {
+            line.v1 = rule[1];
+        }
+        if (rule.length > 2) {
+            line.v2 = rule[2];
+        }
+        if (rule.length > 3) {
+            line.v3 = rule[3];
+        }
+        if (rule.length > 4) {
+            line.v4 = rule[4];
+        }
+        if (rule.length > 5) {
+            line.v5 = rule[5];
+        }
+
+        return line;
+    }
+
+    /**
+     * savePolicy saves all policy rules to the storage.
+     */
+    public async savePolicy(model: Model) {
+        await this.clearTable();
+
+        let astMap = model.model.get('p');
+        const lines: CasbinRule[] = [];
+        // @ts-ignore
+        for (const [ptype, ast] of astMap) {
+            for (const rule of ast.policy) {
+                const line = this.savePolicyLine(ptype, rule);
+                lines.push(line);
+            }
+        }
+
+        astMap = model.model.get('g');
+        // @ts-ignore
+        for (const [ptype, ast] of astMap) {
+            for (const rule of ast.policy) {
+                const line = this.savePolicyLine(ptype, rule);
+                lines.push(line);
+            }
+        }
+        await this.typeorm.getRepository(CasbinRule).save(lines);
+
+        return true;
+    }
+
+    /**
+     * addPolicy adds a policy rule to the storage.
+     */
+    public async addPolicy(sec: string, ptype: string, rule: string[]) {
+        const line = this.savePolicyLine(ptype, rule);
+        await line.save();
+    }
+
+    /**
+     * removePolicy removes a policy rule from the storage.
+     */
+    public async removePolicy(sec: string, ptype: string, rule: string[]) {
+        const line = this.savePolicyLine(ptype, rule);
+        await CasbinRule.delete(line);
+    }
+
+    /**
+     * removeFilteredPolicy removes policy rules that match the filter from the storage.
+     */
+    public async removeFilteredPolicy(sec: string, ptype: string, fieldIndex: number, ...fieldValues: string[]) {
+        throw new Error('not implemented');
+    }
+}

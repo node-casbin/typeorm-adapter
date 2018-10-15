@@ -1,0 +1,88 @@
+{
+  "name": "typeorm-adapter",
+  "version": "1.0.1",
+  "description": "TypeORM adapter for Casbin",
+  "main": "lib/adapter.js",
+  "typings": "lib/adapter.d.ts",
+  "scripts": {
+    "precommit": "lint-staged",
+    "prepublish": "yarn run lint && yarn run test && yarn build",
+    "build": "rimraf lib && tsc",
+    "lint": "tslint \"src/**/*.ts\"",
+    "fix": "tslint \"src/**/*.ts\" --fix",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@types/jest": "^23.3.5",
+    "@types/node": "^10.11.7",
+    "coveralls": "^3.0.2",
+    "husky": "^1.1.2",
+    "jest": "^23.6.0",
+    "lint-staged": "^7.3.0",
+    "mysql2": "^1.6.1",
+    "rimraf": "^2.6.2",
+    "ts-jest": "22.4.6",
+    "tslint": "^5.11.0",
+    "typescript": "^3.1.3"
+  },
+  "dependencies": {
+    "casbin": "^1.1.2",
+    "typeorm": "^0.2.7"
+  },
+  "files": [
+    "lib",
+    "examples"
+  ],
+  "homepage": "https://casbin.org",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/node-casbin/typeorm-adapter.git"
+  },
+  "keywords": [
+    "casbin",
+    "node-casbin",
+    "adapter",
+    "typeorm",
+    "access-control",
+    "authorization",
+    "auth",
+    "authz",
+    "acl",
+    "rbac",
+    "abac",
+    "orm"
+  ],
+  "author": "Node-Casbin",
+  "licenses": [
+    {
+      "type": "Apache-2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0"
+    }
+  ],
+  "bugs": {
+    "url": "https://github.com/node-casbin/typeorm-adapter/issues"
+  },
+  "lint-staged": {
+    "*.{ts,js}": [
+      "tslint --fix",
+      "git add"
+    ]
+  },
+  "jest": {
+    "testURL": "http://localhost",
+    "transform": {
+      "^.+\\.(ts|tsx)$": "ts-jest"
+    },
+    "testMatch": [
+      "**/test/*.+(ts|tsx)"
+    ],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ]
+  }
+}

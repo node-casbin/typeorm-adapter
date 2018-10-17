@@ -16,10 +16,14 @@ TypeORM Adapter is the [TypeORM](https://github.com/typeorm/typeorm) adapter for
 
 Based on [Officially Supported Databases](http://typeorm.io), the current supported databases are:
 
-- PostgreSQL
 - MySQL
+- PostgreSQL
+- MariaDB
 - SQLite
-- MSSQL
+- MS SQL Server
+- Oracle
+- WebSQL
+- MongoDB 
 
 
 You may find other 3rd-party supported DBs in TypeORM website or other places.

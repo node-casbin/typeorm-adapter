@@ -149,6 +149,29 @@ export default class TypeORMAdapter implements Adapter {
      * removeFilteredPolicy removes policy rules that match the filter from the storage.
      */
     public async removeFilteredPolicy(sec: string, ptype: string, fieldIndex: number, ...fieldValues: string[]) {
-        throw new Error('not implemented');
+        const line = new CasbinRule();
+
+        line.ptype = ptype;
+
+        if (fieldIndex <= 0 && 0 < fieldIndex + fieldValues.length) {
+            line.v0 = fieldValues[0 - fieldIndex];
+        }
+        if (fieldIndex <= 1 && 1 < fieldIndex + fieldValues.length) {
+            line.v1 = fieldValues[1 - fieldIndex];
+        }
+        if (fieldIndex <= 2 && 2 < fieldIndex + fieldValues.length) {
+            line.v2 = fieldValues[2 - fieldIndex];
+        }
+        if (fieldIndex <= 3 && 3 < fieldIndex + fieldValues.length) {
+            line.v3 = fieldValues[3 - fieldIndex];
+        }
+        if (fieldIndex <= 4 && 4 < fieldIndex + fieldValues.length) {
+            line.v4 = fieldValues[4 - fieldIndex];
+        }
+        if (fieldIndex <= 5 && 5 < fieldIndex + fieldValues.length) {
+            line.v5 = fieldValues[5 - fieldIndex];
+        }
+
+        await CasbinRule.delete(line);
     }
 }

@@ -31,16 +31,13 @@ export default class TypeORMAdapter implements Adapter {
      * @param option typeorm connection option
      */
     public static async newAdapter(option: ConnectionOptions) {
-        const officialOption = {
-            entities: [CasbinRule],
+        const defaults = {
             synchronize: true,
             name: 'node-casbin-official'
         };
-        if (option.name) {
-            officialOption.name = option.name;
-        }
-
-        const a = new TypeORMAdapter(Object.assign(option, officialOption));
+        const entities = { entities: [CasbinRule] };
+        const configuration = Object.assign(defaults, option);
+        const a = new TypeORMAdapter(Object.assign(configuration, entities));
         await a.open();
         return a;
     }

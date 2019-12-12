@@ -25,7 +25,7 @@ type CasbinRuleConstructor = new (...args: any[]) => GenericCasbinRule;
  */
 export default class TypeORMAdapter implements Adapter {
     private option: ConnectionOptions;
-    private typeorm!: Connection;
+    private typeorm: Connection;
 
     private constructor(option: ConnectionOptions) {
         this.option = option;

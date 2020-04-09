@@ -35,7 +35,7 @@ You may find other 3rd-party supported DBs in TypeORM website or other places.
 ## Simple Example
 
 ```typescript
-import {Enforcer} from 'casbin';
+import { newEnforcer } from 'casbin';
 import TypeORMAdapter from 'typeorm-adapter';
 
 async function myFunction() {
@@ -53,7 +53,7 @@ async function myFunction() {
     });
 
 
-    const e = await Enforcer.newEnforcer('examples/rbac_model.conf', a);
+    const e = await newEnforcer('examples/rbac_model.conf', a);
 
     // Load the policy from DB.
     await e.loadPolicy();

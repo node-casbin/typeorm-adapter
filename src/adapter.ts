@@ -16,6 +16,7 @@ import {Adapter, Helper, Model} from 'casbin';
 import {CasbinRule} from './casbinRule';
 import {Connection, ConnectionOptions, createConnection, getRepository} from 'typeorm';
 import {CasbinMongoRule} from './casbinMongoRule';
+import { listeners } from 'cluster';
 
 type GenericCasbinRule = CasbinRule | CasbinMongoRule;
 type CasbinRuleConstructor = new (...args: any[]) => GenericCasbinRule;
@@ -144,11 +145,35 @@ export default class TypeORMAdapter implements Adapter {
     }
 
     /**
+     * addPolicies adds policy rules to the storage.
+     */
+    public async addPolicies(sec: string, ptype: string, rules: string[][]) {
+        const lines: GenericCasbinRule[] = [];
+        for (const rule of rules) {
+            const line = this.savePolicyLine(ptype, rule);
+            lines.push(line);
+        }
+
+        await getRepository(this.getCasbinRuleConstructor(), this.option.name).save(lines);
+    }
+
+    /**
      * removePolicy removes a policy rule from the storage.
      */
     public async removePolicy(sec: string, ptype: string, rule: string[]) {
         const line = this.savePolicyLine(ptype, rule);
         await getRepository(this.getCasbinRuleConstructor(), this.option.name).delete(line);
+    }
+
+    /**
+     * removePolicies removes policy rules from the storage.
+     */
+    public async removePolicies(sec: string, ptype: string, rules: string[][]) {
+        const repository = getRepository(this.getCasbinRuleConstructor(), this.option.name);
+        for (const rule of rules) {
+            const line = this.savePolicyLine(ptype, rule);
+            await repository.delete(line);
+        }
     }
 
     /**

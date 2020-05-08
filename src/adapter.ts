@@ -14,7 +14,7 @@
 
 import {Adapter, Helper, Model} from 'casbin';
 import {CasbinRule} from './casbinRule';
-import {Connection, ConnectionOptions, createConnection, getRepository} from 'typeorm';
+import {Connection, ConnectionOptions, createConnection, getRepository, getConnection} from 'typeorm';
 import {CasbinMongoRule} from './casbinMongoRule';
 
 type GenericCasbinRule = CasbinRule | CasbinMongoRule;
@@ -130,7 +130,21 @@ export default class TypeORMAdapter implements Adapter {
                 lines.push(line);
             }
         }
-        await getRepository(this.getCasbinRuleConstructor(), this.option.name).save(lines);
+
+        const queryRunner = this.typeorm.createQueryRunner();
+
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+
+        try {
+            await queryRunner.manager.save(lines);
+            await queryRunner.commitTransaction();
+        } catch (err) {
+            await queryRunner.rollbackTransaction();
+            throw err;
+        } finally {
+            await queryRunner.release();
+        }
 
         return true;
     }
@@ -153,7 +167,20 @@ export default class TypeORMAdapter implements Adapter {
             lines.push(line);
         }
 
-        await getRepository(this.getCasbinRuleConstructor(), this.option.name).save(lines);
+        const queryRunner = this.typeorm.createQueryRunner();
+
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+
+        try {
+            await queryRunner.manager.save(lines);
+            await queryRunner.commitTransaction();
+        } catch (err) {
+            await queryRunner.rollbackTransaction();
+            throw err;
+        } finally {
+            await queryRunner.release();
+        }
     }
 
     /**
@@ -168,10 +195,23 @@ export default class TypeORMAdapter implements Adapter {
      * removePolicies removes policy rules from the storage.
      */
     public async removePolicies(sec: string, ptype: string, rules: string[][]) {
-        const repository = getRepository(this.getCasbinRuleConstructor(), this.option.name);
-        for (const rule of rules) {
-            const line = this.savePolicyLine(ptype, rule);
-            await repository.delete(line);
+        const queryRunner = this.typeorm.createQueryRunner();
+        const type = TypeORMAdapter.getCasbinRuleType(this.option.type);
+
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+
+        try {
+            for (const rule of rules) {
+                const line = this.savePolicyLine(ptype, rule);
+                await queryRunner.manager.delete(type, line);
+            }
+            await queryRunner.commitTransaction();
+        } catch (err) {
+            await queryRunner.rollbackTransaction();
+            throw err;
+        } finally {
+            await queryRunner.release();
         }
     }
 

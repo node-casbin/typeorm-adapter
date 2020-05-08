@@ -76,8 +76,49 @@ test('TestAdapter', async () => {
             ['data2_admin', 'data2', 'write'],
             ['role', 'res', 'action']]);
 
+        await a.addPolicies('', 'p', [
+            ['role1', 'res1', 'action1'],
+            ['role2', 'res2', 'action2'],
+            ['role3', 'res3', 'action3'],
+            ['role4', 'res4', 'action4'],
+            ['role5', 'res5', 'action5']
+        ]);
+        e = await Enforcer.newEnforcer('examples/rbac_model.conf', a);
+        testGetPolicy(e, [
+            ['alice', 'data1', 'read'],
+            ['bob', 'data2', 'write'],
+            ['data2_admin', 'data2', 'read'],
+            ['data2_admin', 'data2', 'write'],
+            ['role', 'res', 'action'],
+            ['role1', 'res1', 'action1'],
+            ['role2', 'res2', 'action2'],
+            ['role3', 'res3', 'action3'],
+            ['role4', 'res4', 'action4'],
+            ['role5', 'res5', 'action5']
+        ]);
+
         // Remove policy from DB
         await a.removePolicy('', 'p', ['role', 'res', 'action']);
+        e = await Enforcer.newEnforcer('examples/rbac_model.conf', a);
+        testGetPolicy(e, [
+            ['alice', 'data1', 'read'],
+            ['bob', 'data2', 'write'],
+            ['data2_admin', 'data2', 'read'],
+            ['data2_admin', 'data2', 'write'],
+            ['role1', 'res1', 'action1'],
+            ['role2', 'res2', 'action2'],
+            ['role3', 'res3', 'action3'],
+            ['role4', 'res4', 'action4'],
+            ['role5', 'res5', 'action5']
+        ]);
+
+        await a.removePolicies('', 'p', [
+            ['role1', 'res1', 'action1'],
+            ['role2', 'res2', 'action2'],
+            ['role3', 'res3', 'action3'],
+            ['role4', 'res4', 'action4'],
+            ['role5', 'res5', 'action5']
+        ]);
         e = await Enforcer.newEnforcer('examples/rbac_model.conf', a);
         testGetPolicy(e, [
             ['alice', 'data1', 'read'],

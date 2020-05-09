@@ -1,6 +1,6 @@
 {
   "name": "typeorm-adapter",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "description": "TypeORM adapter for Casbin",
   "main": "lib/adapter.js",
   "typings": "lib/adapter.d.ts",
@@ -19,7 +19,7 @@
     "husky": "^1.1.2",
     "jest": "^23.6.0",
     "lint-staged": "^7.3.0",
-    "mysql2": "^1.6.1",
+    "mysql2": "^2.1.0",
     "rimraf": "^2.6.2",
     "ts-jest": "22.4.6",
     "tslint": "^5.11.0",

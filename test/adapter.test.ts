@@ -125,6 +125,10 @@ test('TestAdapter', async () => {
             ['bob', 'data2', 'write'],
             ['data2_admin', 'data2', 'read'],
             ['data2_admin', 'data2', 'write']]);
+
+        // Load Filtered Policy
+        await a.loadFilteredPolicy(e.getModel(), { ptype : 'p', v0 : 'alice' });
+        testGetPolicy(e, [['alice', 'data1', 'read']]);
     } finally {
         a.close();
     }

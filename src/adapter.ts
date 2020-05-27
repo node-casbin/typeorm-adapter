@@ -16,7 +16,7 @@ import {Adapter, Helper, Model} from 'casbin';
 import {CasbinRule} from './casbinRule';
 import {Connection, ConnectionOptions, createConnection, getRepository, getConnection} from 'typeorm';
 import {CasbinMongoRule} from './casbinMongoRule';
-import { CasbinFilter, CasbinRuleFilter } from './model';
+import { CasbinFilter } from './model';
 
 type GenericCasbinRule = CasbinRule | CasbinMongoRule;
 type CasbinRuleConstructor = new (...args: any[]) => GenericCasbinRule;

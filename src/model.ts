@@ -1,1 +1,1 @@
-export type CasbinFilter = Record<string, string>;
+export type CasbinFilter = {  }

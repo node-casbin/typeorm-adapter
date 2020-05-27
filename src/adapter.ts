@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Adapter, Helper, Model} from 'casbin';
+import {Adapter, Helper, Model, FilteredAdapter} from 'casbin';
 import {CasbinRule} from './casbinRule';
 import {Connection, ConnectionOptions, createConnection, getRepository, getConnection} from 'typeorm';
 import {CasbinMongoRule} from './casbinMongoRule';
@@ -23,12 +23,17 @@ type CasbinRuleConstructor = new (...args: any[]) => GenericCasbinRule;
 /**
  * TypeORMAdapter represents the TypeORM adapter for policy storage.
  */
-export default class TypeORMAdapter implements Adapter {
+export default class TypeORMAdapter implements Adapter, FilteredAdapter {
     private option: ConnectionOptions;
     private typeorm: Connection;
+    private filtered = false;
 
     private constructor(option: ConnectionOptions) {
         this.option = option;
+    }
+
+    public isFiltered(): boolean {
+        return this.filtered;
     }
 
     /**
@@ -81,11 +86,12 @@ export default class TypeORMAdapter implements Adapter {
     }
 
     // Loading policies based on filter condition
-    public async loadFilteredPolicy(model: Model, filter: object) {
+    public async loadFilteredPolicy(model: Model, filter: any) {
         const filteredLines = await getRepository(this.getCasbinRuleConstructor(), this.option.name).find(filter);
         for (const line of filteredLines) {
             this.loadPolicyLine(line, model);
         }
+        this.filtered = true;
     }
 
     private savePolicyLine(ptype: string, rule: string[]): GenericCasbinRule {

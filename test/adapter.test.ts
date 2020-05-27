@@ -25,10 +25,10 @@ function testGetPolicy(e: Enforcer, res: string[][]) {
 test('TestAdapter', async () => {
     const a = await TypeORMAdapter.newAdapter({
         type: 'mysql',
-        host: 'localhost',
+        host: '192.168.1.5',
         port: 3306,
         username: 'root',
-        password: '',
+        password: 'password',
         database: 'casbin',
     });
     try {
@@ -127,8 +127,11 @@ test('TestAdapter', async () => {
             ['data2_admin', 'data2', 'write']]);
 
         // Load Filtered Policy
-        // await e.loadFilteredPolicy({ ptype : 'p', v0 : 'alice'  });
-        // testGetPolicy(e, [['alice', 'data1', 'read']]);
+        /*await a.loadFilteredPolicy(e.getModel(), {
+            ptype: 'p',
+            v0: 'alice'
+        });
+        testGetPolicy(e, [['alice', 'data1', 'read']]);*/
     } finally {
         a.close();
     }

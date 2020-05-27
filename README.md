@@ -70,6 +70,46 @@ async function myFunction() {
 }
 ```
 
+## Simple Filter Example
+
+```typescript
+import { newEnforcer } from 'casbin';
+import TypeORMAdapter from 'typeorm-adapter';
+
+async function myFunction() {
+    // Initialize a TypeORM adapter and use it in a Node-Casbin enforcer:
+    // The adapter can not automatically create database.
+    // But the adapter will automatically and use the table named "casbin_rule".
+    // I think ORM should not automatically create databases.  
+    const a = await TypeORMAdapter.newAdapter({
+        type: 'mysql',
+        host: 'localhost',
+        port: 3306,
+        username: 'root',
+        password: '',
+        database: 'casbin',
+    });
+
+
+    const e = await newEnforcer('examples/rbac_model.conf', a);
+
+    // Load the filtered policy from DB.
+    await e.loadFilteredPolicy({
+        'ptype': 'p',
+        'v0': 'alice'
+    });
+
+    // Check the permission.
+    e.enforce('alice', 'data1', 'read');
+
+    // Modify the policy.
+    // await e.addPolicy(...);
+    // await e.removePolicy(...);
+
+    // Save the policy back to DB.
+    await e.savePolicy();
+}
+```
 ## Getting Help
 
 - [Node-Casbin](https://github.com/casbin/node-casbin)

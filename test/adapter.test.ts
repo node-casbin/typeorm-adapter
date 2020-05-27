@@ -37,7 +37,7 @@ test('TestAdapter', async () => {
         username: 'root',
         password: 'password',
         database: 'casbin',
-        //insecureAuth : true
+        // insecureAuth : true
     });
     try {
         // Because the DB is empty at first,
@@ -135,8 +135,8 @@ test('TestAdapter', async () => {
             ['data2_admin', 'data2', 'write']]);
 
         // Load Filtered Policy
-        //await e.loadFilteredPolicy({ ptype : 'p', v0 : 'alice'  });
-        //testGetPolicy(e, [['alice', 'data1', 'read']]);
+        // await e.loadFilteredPolicy({ ptype : 'p', v0 : 'alice'  });
+        // testGetPolicy(e, [['alice', 'data1', 'read']]);
     } finally {
         a.close();
     }

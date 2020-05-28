@@ -59,7 +59,7 @@ async function myFunction() {
     await e.loadPolicy();
 
     // Check the permission.
-    e.enforce('alice', 'data1', 'read');
+    await e.enforce('alice', 'data1', 'read');
 
     // Modify the policy.
     // await e.addPolicy(...);
@@ -100,7 +100,7 @@ async function myFunction() {
     });
 
     // Check the permission.
-    e.enforce('alice', 'data1', 'read');
+    await e.enforce('alice', 'data1', 'read');
 
     // Modify the policy.
     // await e.addPolicy(...);

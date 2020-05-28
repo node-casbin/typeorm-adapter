@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Adapter, Helper, Model, FilteredAdapter} from 'casbin';
+import {Helper, Model, FilteredAdapter} from 'casbin';
 import {CasbinRule} from './casbinRule';
 import {Connection, ConnectionOptions, createConnection, getRepository, getConnection} from 'typeorm';
 import {CasbinMongoRule} from './casbinMongoRule';
@@ -21,9 +21,9 @@ type GenericCasbinRule = CasbinRule | CasbinMongoRule;
 type CasbinRuleConstructor = new (...args: any[]) => GenericCasbinRule;
 
 /**
- * TypeORMAdapter represents the TypeORM adapter for policy storage.
+ * TypeORMAdapter represents the TypeORM filtered adapter for policy storage.
  */
-export default class TypeORMAdapter implements Adapter, FilteredAdapter {
+export default class TypeORMAdapter implements FilteredAdapter {
     private option: ConnectionOptions;
     private typeorm: Connection;
     private filtered = false;

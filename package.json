@@ -1,6 +1,6 @@
 {
   "name": "typeorm-adapter",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "TypeORM adapter for Casbin",
   "main": "lib/adapter.js",
   "typings": "lib/adapter.d.ts",

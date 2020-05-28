@@ -86,7 +86,7 @@ export default class TypeORMAdapter implements Adapter, FilteredAdapter {
     }
 
     // Loading policies based on filter condition
-    public async loadFilteredPolicy(model: Model, filter: any) {
+    public async loadFilteredPolicy(model: Model, filter: object) {
         const filteredLines = await getRepository(this.getCasbinRuleConstructor(), this.option.name).find(filter);
         for (const line of filteredLines) {
             this.loadPolicyLine(line, model);

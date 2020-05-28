@@ -22,6 +22,11 @@ function testGetPolicy(e: Enforcer, res: string[][]) {
     expect(Util.array2DEquals(res, myRes)).toBe(true);
 }
 
+function testGetFilteredPolicy(e: Enforcer, res: string[]) {
+    const myRes = e.getFilteredNamedPolicy('p', 0, 'alice')[0];
+    expect(Util.arrayEquals(res, myRes)).toBe(true);
+}
+
 test('TestAdapter', async () => {
     const a = await TypeORMAdapter.newAdapter({
         type: 'mysql',
@@ -65,6 +70,10 @@ test('TestAdapter', async () => {
             ['bob', 'data2', 'write'],
             ['data2_admin', 'data2', 'read'],
             ['data2_admin', 'data2', 'write']]);
+
+        // load filtered policies
+        await a.loadFilteredPolicy(e.getModel(), { ptype: 'p', v0: 'alice'});
+        testGetFilteredPolicy(e, ['alice', 'data1', 'read']);
 
         // Add policy to DB
         await a.addPolicy('', 'p', ['role', 'res', 'action']);

@@ -13,7 +13,9 @@
 // limitations under the License.
 
 import { Enforcer, Util } from 'casbin';
+import { createConnection } from 'typeorm';
 import TypeORMAdapter from '../src/adapter';
+import { CasbinRule } from '../src/casbinRule';
 
 async function testGetPolicy(e: Enforcer, res: string[][]) {
   const myRes = await e.getPolicy();
@@ -31,14 +33,16 @@ async function testGetFilteredPolicy(e: Enforcer, res: string[]) {
 test(
   'TestAdapter',
   async () => {
-    const a = await TypeORMAdapter.newAdapter({
+    const connection = await createConnection({
       type: 'postgres',
       host: 'localhost',
       port: 5432,
       username: 'postgres',
       password: 'postgres',
       database: 'casbin',
+      entities: [CasbinRule],
     });
+    const a = await TypeORMAdapter.newAdapter({ connection });
     try {
       // Because the DB is empty at first,
       // so we need to load the policy from the file adapter (.CSV) first.

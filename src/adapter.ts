@@ -28,7 +28,7 @@ type CasbinRuleConstructor = new (...args: any[]) => GenericCasbinRule;
 interface ExistentConnection {
   connection: Connection;
 }
-type TypeORMAdapterOptions = ExistentConnection | ConnectionOptions;
+export type TypeORMAdapterOptions = ExistentConnection | ConnectionOptions;
 
 /**
  * TypeORMAdapter represents the TypeORM filtered adapter for policy storage.

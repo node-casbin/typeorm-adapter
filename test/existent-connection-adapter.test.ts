@@ -41,6 +41,8 @@ test(
       password: 'postgres',
       database: 'casbin',
       entities: [CasbinRule],
+      synchronize: true,
+      dropSchema: true,
     });
     const a = await TypeORMAdapter.newAdapter({ connection });
     try {

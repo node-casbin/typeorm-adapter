@@ -38,6 +38,7 @@ test(
       username: 'postgres',
       password: 'postgres',
       database: 'casbin',
+      dropSchema: true,
     });
     try {
       // Because the DB is empty at first,

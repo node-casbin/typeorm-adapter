@@ -34,11 +34,11 @@ test(
   'TestAdapter',
   async () => {
     const connection = await createConnection({
-      type: 'postgres',
+      type: 'mysql',
       host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: 'postgres',
+      port: 3306,
+      username: 'root',
+      password: '',
       database: 'casbin',
       entities: [CasbinRule],
       synchronize: true,

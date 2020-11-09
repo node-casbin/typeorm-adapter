@@ -32,11 +32,11 @@ test(
   'TestAdapter',
   async () => {
     const a = await TypeORMAdapter.newAdapter({
-      type: 'postgres',
+      type: 'mysql',
       host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: 'postgres',
+      port: 3306,
+      username: 'root',
+      password: '',
       database: 'casbin',
       dropSchema: true,
     });

@@ -1,5 +1,5 @@
 {
-  "name": "@reinaldooli/typeorm-adapter",
+  "name": "typeorm-adapter",
   "version": "1.3.0",
   "description": "TypeORM adapter for Casbin",
   "main": "lib/adapter.js",

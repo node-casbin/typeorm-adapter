@@ -14,8 +14,7 @@
 
 import { Enforcer, Util } from 'casbin';
 import { createConnection } from 'typeorm';
-import TypeORMAdapter from '../src/adapter';
-import { CasbinRule } from '../src/casbinRule';
+import TypeORMAdapter, { CasbinRule } from '../src/index';
 
 async function testGetPolicy(e: Enforcer, res: string[][]) {
   const myRes = await e.getPolicy();

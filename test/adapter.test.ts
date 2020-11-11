@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { Enforcer, Util } from 'casbin';
-import TypeORMAdapter from '../src/adapter';
+import TypeORMAdapter from '../src/index';
 
 async function testGetPolicy(e: Enforcer, res: string[][]) {
   const myRes = await e.getPolicy();

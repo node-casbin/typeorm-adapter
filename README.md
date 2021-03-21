@@ -32,6 +32,10 @@ You may find other 3rd-party supported DBs in TypeORM website or other places.
 
     npm install typeorm-adapter
 
+Or:
+
+    yarn add typeorm-adapter
+
 ## Simple Example
 
 ```typescript

@@ -6,11 +6,12 @@
   "typings": "lib/index.d.ts",
   "scripts": {
     "precommit": "lint-staged",
-    "prepublish": "yarn run lint && yarn run test && yarn build",
+    "prepublish": "yarn run lint && yarn build",
     "build": "rimraf lib && tsc",
     "lint": "tslint \"src/**/*.ts\"",
     "fix": "tslint \"src/**/*.ts\" --fix",
-    "test": "jest --runInBand"
+    "test": "jest --runInBand",
+    "release": "npx -p semantic-release -p @semantic-release/git -p @semantic-release/changelog semantic-release"
   },
   "devDependencies": {
     "@types/jest": "^23.3.5",

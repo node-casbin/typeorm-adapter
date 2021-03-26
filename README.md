@@ -3,7 +3,7 @@ TypeORM Adapter
 [![NPM version][npm-image]][npm-url]
 [![NPM download][download-image]][download-url]
 [![codebeat badge](https://codebeat.co/badges/7b938f17-ac89-4ee9-b3cc-787b5e94720d)](https://codebeat.co/projects/github-com-node-casbin-typeorm-adapter-master)
-[![Build Status](https://travis-ci.com/node-casbin/typeorm-adapter.svg?branch=master)](https://travis-ci.com/node-casbin/typeorm-adapter)
+[![GitHub Actions](https://github.com/node-casbin/typeorm-adapter/workflows/main/badge.svg)](https://github.com/node-casbin/typeorm-adapter/actions)
 [![Coverage Status](https://coveralls.io/repos/github/node-casbin/typeorm-adapter/badge.svg?branch=master)](https://coveralls.io/github/node-casbin/typeorm-adapter?branch=master)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/casbin/lobby)
 

@@ -1,0 +1,92 @@
+name: CI
+
+on: [ push, pull_request ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2.1.5
+
+      - name: Install Dependency
+        run: yarn install
+
+      - name: Run Lint
+        run: yarn run lint
+
+      - name: Run Fix
+        run: yarn run fix
+
+  coverage:
+    needs: [ lint ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup MySQL
+        uses: mirromutth/mysql-action@v1.1
+        with:
+          mysql database: casbin
+          mysql root password: password
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2.1.5
+        with:
+          node-version: ^14
+
+      - name: Install Dependency
+        run: yarn install
+
+      - name: Run Coverage
+        run: yarn run coverage
+
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          parallel: true
+
+  test:
+    needs: [ lint ]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [ ^12, ^13, ^14, ^15 ]
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup MySQL
+        uses: mirromutth/mysql-action@v1.1
+        with:
+          mysql database: casbin
+          mysql root password: password
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2.1.5
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Install Dependency
+        run: yarn install
+
+      - name: Run Unit test
+        run: yarn run test
+
+  semantic-release:
+    needs: [ lint,test,coverage ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Run semantic-release
+        if: github.repository == 'node-casbin/typeorm-adapter' && github.event_name == 'push'
+        run: |
+          yarn install --no-lockfile
+          yarn run prepublish
+          yarn run release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

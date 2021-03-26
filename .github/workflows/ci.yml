@@ -1,4 +1,4 @@
-name: Continuous integration
+name: CI
 
 on: [ push, pull_request ]
 
@@ -33,7 +33,7 @@ jobs:
         run: yarn install
 
       - name: Run Coverage
-        run: jest --coverage
+        run: yarn run coverage
 
       - name: Coveralls
         uses: coverallsapp/github-action@master

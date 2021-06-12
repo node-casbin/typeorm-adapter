@@ -101,7 +101,7 @@ export default class TypeORMAdapter implements FilteredAdapter {
     const result =
       line.ptype +
       ', ' +
-      [line.v0, line.v1, line.v2, line.v3, line.v4, line.v5]
+      [line.v0, line.v1, line.v2, line.v3, line.v4, line.v5, line.v6]
         .filter((n) => n)
         .join(', ');
     Helper.loadPolicyLine(result, model);
@@ -154,6 +154,9 @@ export default class TypeORMAdapter implements FilteredAdapter {
     }
     if (rule.length > 5) {
       line.v5 = rule[5];
+    }
+    if (rule.length > 6) {
+      line.v6 = rule[6];
     }
 
     return line;
@@ -303,6 +306,9 @@ export default class TypeORMAdapter implements FilteredAdapter {
     }
     if (fieldIndex <= 5 && 5 < fieldIndex + fieldValues.length) {
       line.v5 = fieldValues[5 - fieldIndex];
+    }
+    if (fieldIndex <= 6 && 6 < fieldIndex + fieldValues.length) {
+      line.v6 = fieldValues[6 - fieldIndex];
     }
     await getRepository(
       this.getCasbinRuleConstructor(),

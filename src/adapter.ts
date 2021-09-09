@@ -102,6 +102,7 @@ export default class TypeORMAdapter implements FilteredAdapter {
       line.ptype +
       ', ' +
       [line.v0, line.v1, line.v2, line.v3, line.v4, line.v5, line.v6]
+        .map((n) => `"${n}"`)
         .filter((n) => n)
         .join(', ');
     Helper.loadPolicyLine(result, model);

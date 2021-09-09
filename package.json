@@ -12,7 +12,8 @@
     "lint": "tslint \"src/**/*.ts\"",
     "fix": "tslint \"src/**/*.ts\" --fix",
     "test": "jest --runInBand",
-    "release": "npx -p semantic-release -p @semantic-release/git -p @semantic-release/changelog semantic-release"
+    "release": "npx -p semantic-release -p @semantic-release/git -p @semantic-release/changelog semantic-release",
+    "prepare": "npm run build"
   },
   "devDependencies": {
     "@types/jest": "^23.3.5",

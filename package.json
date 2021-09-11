@@ -30,7 +30,7 @@
     "typescript": "^3.1.3"
   },
   "dependencies": {
-    "casbin": "^5.2.0",
+    "casbin": "^5.11.5",
     "typeorm": "^0.2.29"
   },
   "files": [

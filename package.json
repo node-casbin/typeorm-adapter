@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "casbin": "^5.11.5",
-    "typeorm": "^0.2.29"
+    "typeorm": "^0.3.6"
   },
   "files": [
     "lib",
@@ -78,7 +78,7 @@
       "^.+\\.(ts|tsx)$": "ts-jest"
     },
     "testMatch": [
-      "**/test/*.+(ts|tsx)"
+      "**/test/*.test.+(ts|tsx)"
     ],
     "moduleFileExtensions": [
       "ts",

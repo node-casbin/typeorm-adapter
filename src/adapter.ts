@@ -250,7 +250,9 @@ export default class TypeORMAdapter implements FilteredAdapter {
     await getRepository(
       this.getCasbinRuleConstructor(),
       this.option.name,
-    ).delete(line);
+    ).delete({
+      ...line,
+    });
   }
 
   /**
@@ -314,7 +316,9 @@ export default class TypeORMAdapter implements FilteredAdapter {
     await getRepository(
       this.getCasbinRuleConstructor(),
       this.option.name,
-    ).delete(line);
+    ).delete({
+      ...line,
+    });
   }
 
   private getCasbinRuleConstructor(): CasbinRuleConstructor {

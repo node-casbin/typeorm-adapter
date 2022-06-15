@@ -14,6 +14,7 @@
 
 import { Enforcer, Util } from 'casbin';
 import TypeORMAdapter from '../src/index';
+import { connectionConfig } from './config';
 
 async function testGetPolicy(e: Enforcer, res: string[][]) {
   const myRes = await e.getPolicy();
@@ -31,15 +32,7 @@ async function testGetFilteredPolicy(e: Enforcer, res: string[]) {
 test(
   'TestAdapter',
   async () => {
-    const a = await TypeORMAdapter.newAdapter({
-      type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: 'password',
-      database: 'casbin',
-      dropSchema: true,
-    });
+    const a = await TypeORMAdapter.newAdapter(connectionConfig);
     try {
       // Because the DB is empty at first,
       // so we need to load the policy from the file adapter (.CSV) first.

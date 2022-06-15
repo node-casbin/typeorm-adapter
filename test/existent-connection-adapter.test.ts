@@ -15,6 +15,7 @@
 import { Enforcer, Util } from 'casbin';
 import { createConnection } from 'typeorm';
 import TypeORMAdapter, { CasbinRule } from '../src/index';
+import { connectionConfig } from './config';
 
 async function testGetPolicy(e: Enforcer, res: string[][]) {
   const myRes = await e.getPolicy();
@@ -33,15 +34,9 @@ test(
   'TestAdapter',
   async () => {
     const connection = await createConnection({
-      type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: 'password',
-      database: 'casbin',
+      ...connectionConfig,
       entities: [CasbinRule],
       synchronize: true,
-      dropSchema: true,
     });
     const a = await TypeORMAdapter.newAdapter({ connection });
     try {

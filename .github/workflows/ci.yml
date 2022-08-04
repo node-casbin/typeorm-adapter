@@ -1,6 +1,6 @@
 name: CI
 
-on: [ push, pull_request ]
+on: [push, pull_request]
 
 jobs:
   lint:
@@ -21,7 +21,7 @@ jobs:
         run: yarn run fix
 
   coverage:
-    needs: [ lint ]
+    needs: [lint]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -50,11 +50,11 @@ jobs:
           parallel: true
 
   test:
-    needs: [ lint ]
+    needs: [lint]
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: [ ^16, ^17, ^18 ]
+        node: [^16, ^17, ^18]
     steps:
       - uses: actions/checkout@v2
 
@@ -65,7 +65,7 @@ jobs:
           mysql root password: password
 
       - name: Set up Node.js
-        uses: actions/setup-node@v2.1.5
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
 
@@ -76,15 +76,20 @@ jobs:
         run: yarn run test
 
   semantic-release:
-    needs: [ lint,test,coverage ]
+    needs: [lint, test, coverage]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ^18
+
       - name: Run semantic-release
         if: github.repository == 'node-casbin/typeorm-adapter' && github.event_name == 'push'
         run: |
-          yarn install --no-lockfile
+          yarn install
           yarn run prepublish
           yarn run release
         env:

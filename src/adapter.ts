@@ -15,10 +15,10 @@
 import { Helper, Model, FilteredAdapter } from 'casbin';
 import { CasbinRule } from './casbinRule';
 import {
-  Connection,
-  ConnectionOptions,
-  createConnection,
-  getRepository,
+  DataSource,
+  DataSourceOptions,
+  FindOptionsWhere,
+  Repository,
 } from 'typeorm';
 import { CasbinMongoRule } from './casbinMongoRule';
 
@@ -26,24 +26,34 @@ type GenericCasbinRule = CasbinRule | CasbinMongoRule;
 type CasbinRuleConstructor = new (...args: any[]) => GenericCasbinRule;
 
 interface ExistentConnection {
-  connection: Connection;
+  connection: DataSource;
 }
-export type TypeORMAdapterOptions = ExistentConnection | ConnectionOptions;
+export type TypeORMAdapterOptions = ExistentConnection | DataSourceOptions;
+
+export interface TypeORMAdapterConfig {
+  customCasbinRuleEntity?: CasbinRuleConstructor;
+}
 
 /**
  * TypeORMAdapter represents the TypeORM filtered adapter for policy storage.
  */
 export default class TypeORMAdapter implements FilteredAdapter {
-  private option: ConnectionOptions;
-  private typeorm: Connection;
+  private adapterConfig?: TypeORMAdapterConfig;
+  private option: DataSourceOptions;
+  private typeorm: DataSource;
   private filtered = false;
 
-  private constructor(option: TypeORMAdapterOptions) {
+  private constructor(
+    option: TypeORMAdapterOptions,
+    adapterConfig?: TypeORMAdapterConfig,
+  ) {
+    this.adapterConfig = adapterConfig;
+
     if ((option as ExistentConnection).connection) {
       this.typeorm = (option as ExistentConnection).connection;
       this.option = this.typeorm.options;
     } else {
-      this.option = option as ConnectionOptions;
+      this.option = option as DataSourceOptions;
     }
   }
 
@@ -54,8 +64,12 @@ export default class TypeORMAdapter implements FilteredAdapter {
   /**
    * newAdapter is the constructor.
    * @param option typeorm connection option
+   * @param adapterConfig additional configuration options for the adapter
    */
-  public static async newAdapter(option: TypeORMAdapterOptions) {
+  public static async newAdapter(
+    option: TypeORMAdapterOptions,
+    adapterConfig?: TypeORMAdapterConfig,
+  ) {
     let a: TypeORMAdapter;
 
     const defaults = {
@@ -63,12 +77,19 @@ export default class TypeORMAdapter implements FilteredAdapter {
       name: 'node-casbin-official',
     };
     if ((option as ExistentConnection).connection) {
-      a = new TypeORMAdapter(option);
+      a = new TypeORMAdapter(option, adapterConfig);
     } else {
-      const options = option as ConnectionOptions;
-      const entities = { entities: [this.getCasbinRuleType(options.type)] };
+      const options = option as DataSourceOptions;
+      const entities = {
+        entities: [
+          TypeORMAdapter.getCasbinRuleType(options.type, adapterConfig),
+        ],
+      };
       const configuration = Object.assign(defaults, options);
-      a = new TypeORMAdapter(Object.assign(configuration, entities));
+      a = new TypeORMAdapter(
+        Object.assign(configuration, entities),
+        adapterConfig,
+      );
     }
     await a.open();
     return a;
@@ -76,25 +97,22 @@ export default class TypeORMAdapter implements FilteredAdapter {
 
   private async open() {
     if (!this.typeorm) {
-      this.typeorm = await createConnection(this.option);
+      this.typeorm = new DataSource(this.option);
     }
 
-    if (!this.typeorm.isConnected) {
-      await this.typeorm.connect();
+    if (!this.typeorm.isInitialized) {
+      await this.typeorm.initialize();
     }
   }
 
   public async close() {
-    if (this.typeorm.isConnected) {
-      await this.typeorm.close();
+    if (this.typeorm.isInitialized) {
+      await this.typeorm.destroy();
     }
   }
 
   private async clearTable() {
-    await getRepository(
-      this.getCasbinRuleConstructor(),
-      this.option.name,
-    ).clear();
+    await this.getRepository().clear();
   }
 
   private loadPolicyLine(line: GenericCasbinRule, model: Model) {
@@ -112,10 +130,7 @@ export default class TypeORMAdapter implements FilteredAdapter {
    * loadPolicy loads all policy rules from the storage.
    */
   public async loadPolicy(model: Model) {
-    const lines = await getRepository(
-      this.getCasbinRuleConstructor(),
-      this.option.name,
-    ).find();
+    const lines = await this.getRepository().find();
 
     for (const line of lines) {
       this.loadPolicyLine(line, model);
@@ -123,11 +138,11 @@ export default class TypeORMAdapter implements FilteredAdapter {
   }
 
   // Loading policies based on filter condition
-  public async loadFilteredPolicy(model: Model, filter: object) {
-    const filteredLines = await getRepository(
-      this.getCasbinRuleConstructor(),
-      this.option.name,
-    ).find(filter);
+  public async loadFilteredPolicy(
+    model: Model,
+    filter: FindOptionsWhere<GenericCasbinRule>,
+  ) {
+    const filteredLines = await this.getRepository().find({ where: filter });
     for (const line of filteredLines) {
       this.loadPolicyLine(line, model);
     }
@@ -211,9 +226,7 @@ export default class TypeORMAdapter implements FilteredAdapter {
    */
   public async addPolicy(sec: string, ptype: string, rule: string[]) {
     const line = this.savePolicyLine(ptype, rule);
-    await getRepository(this.getCasbinRuleConstructor(), this.option.name).save(
-      line,
-    );
+    await this.getRepository().save(line);
   }
 
   /**
@@ -247,10 +260,7 @@ export default class TypeORMAdapter implements FilteredAdapter {
    */
   public async removePolicy(sec: string, ptype: string, rule: string[]) {
     const line = this.savePolicyLine(ptype, rule);
-    await getRepository(
-      this.getCasbinRuleConstructor(),
-      this.option.name,
-    ).delete({
+    await this.getRepository().delete({
       ...line,
     });
   }
@@ -260,7 +270,10 @@ export default class TypeORMAdapter implements FilteredAdapter {
    */
   public async removePolicies(sec: string, ptype: string, rules: string[][]) {
     const queryRunner = this.typeorm.createQueryRunner();
-    const type = TypeORMAdapter.getCasbinRuleType(this.option.type);
+    const type = TypeORMAdapter.getCasbinRuleType(
+      this.option.type,
+      this.adapterConfig,
+    );
 
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -313,27 +326,39 @@ export default class TypeORMAdapter implements FilteredAdapter {
     if (fieldIndex <= 6 && 6 < fieldIndex + fieldValues.length) {
       line.v6 = fieldValues[6 - fieldIndex];
     }
-    await getRepository(
-      this.getCasbinRuleConstructor(),
-      this.option.name,
-    ).delete({
+
+    await this.getRepository().delete({
       ...line,
     });
   }
 
   private getCasbinRuleConstructor(): CasbinRuleConstructor {
-    return TypeORMAdapter.getCasbinRuleType(this.option.type);
+    return TypeORMAdapter.getCasbinRuleType(
+      this.option.type,
+      this.adapterConfig,
+    );
   }
 
   /**
-   * Returns either a {@link CasbinRule} or a {@link CasbinMongoRule}, depending on the type. This switch is required as the normal
-   * {@link CasbinRule} does not work when using MongoDB as a backend (due to a missing ObjectID field).
+   * Returns either a {@link CasbinRule} or a {@link CasbinMongoRule}, depending on the type. If passed a custom entity through the adapter config it will use that entity type.
+   * This switch is required as the normal {@link CasbinRule} does not work when using MongoDB as a backend (due to a missing ObjectID field).
    * @param type
    */
-  private static getCasbinRuleType(type: string): CasbinRuleConstructor {
+  private static getCasbinRuleType(
+    type: string,
+    adapterConfig?: TypeORMAdapterConfig,
+  ): CasbinRuleConstructor {
+    if (adapterConfig?.customCasbinRuleEntity) {
+      return adapterConfig.customCasbinRuleEntity;
+    }
+
     if (type === 'mongodb') {
       return CasbinMongoRule;
     }
     return CasbinRule;
+  }
+
+  private getRepository(): Repository<GenericCasbinRule> {
+    return this.typeorm.getRepository(this.getCasbinRuleConstructor());
   }
 }

@@ -16,19 +16,6 @@ import { Enforcer, Util } from 'casbin';
 import TypeORMAdapter from '../src/index';
 import { connectionConfig } from './config';
 
-async function testGetPolicy(e: Enforcer, res: string[][]) {
-  const myRes = await e.getPolicy();
-
-  expect(Util.array2DEquals(res, myRes)).toBe(true);
-}
-
-async function testGetFilteredPolicy(e: Enforcer, res: string[]) {
-  const filtered = await e.getFilteredNamedPolicy('p', 0, 'alice');
-  const myRes = filtered[0];
-
-  expect(Util.arrayEquals(res, myRes)).toBe(true);
-}
-
 test(
   'TestAdapter',
   async () => {
@@ -50,11 +37,11 @@ test(
 
       // Clear the current policy.
       e.clearPolicy();
-      await testGetPolicy(e, []);
+      expect(await e.getPolicy()).toEqual([]);
 
       // Load the policy from DB.
       await a.loadPolicy(e.getModel());
-      await testGetPolicy(e, [
+      expect(await e.getPolicy()).toEqual([
         ['alice', 'data1', 'read'],
         ['bob', 'data2', 'write'],
         ['data2_admin', 'data2', 'read'],
@@ -69,7 +56,7 @@ test(
       // newEnforcer() will load the policy automatically.
       e = new Enforcer();
       await e.initWithAdapter('examples/rbac_model.conf', a);
-      await testGetPolicy(e, [
+      expect(await e.getPolicy()).toEqual([
         ['alice', 'data1', 'read'],
         ['bob', 'data2', 'write'],
         ['data2_admin', 'data2', 'read'],
@@ -77,14 +64,17 @@ test(
       ]);
 
       // load filtered policies
+      e.clearPolicy();
       await a.loadFilteredPolicy(e.getModel(), { ptype: 'p', v0: 'alice' });
-      await testGetFilteredPolicy(e, ['alice', 'data1', 'read']);
+      expect(await e.getFilteredNamedPolicy('p', 0, 'alice')).toEqual([
+        ['alice', 'data1', 'read'],
+      ]);
 
       // Add policy to DB
       await a.addPolicy('', 'p', ['role', 'res', 'action']);
       e = new Enforcer();
       await e.initWithAdapter('examples/rbac_model.conf', a);
-      await testGetPolicy(e, [
+      expect(await e.getPolicy()).toEqual([
         ['alice', 'data1', 'read'],
         ['bob', 'data2', 'write'],
         ['data2_admin', 'data2', 'read'],
@@ -101,7 +91,7 @@ test(
       ]);
       e = new Enforcer();
       await e.initWithAdapter('examples/rbac_model.conf', a);
-      await testGetPolicy(e, [
+      expect(await e.getPolicy()).toEqual([
         ['alice', 'data1', 'read'],
         ['bob', 'data2', 'write'],
         ['data2_admin', 'data2', 'read'],
@@ -118,7 +108,7 @@ test(
       await a.removePolicy('', 'p', ['role', 'res', 'action']);
       e = new Enforcer();
       await e.initWithAdapter('examples/rbac_model.conf', a);
-      await testGetPolicy(e, [
+      expect(await e.getPolicy()).toEqual([
         ['alice', 'data1', 'read'],
         ['bob', 'data2', 'write'],
         ['data2_admin', 'data2', 'read'],
@@ -139,7 +129,7 @@ test(
       ]);
       e = new Enforcer();
       await e.initWithAdapter('examples/rbac_model.conf', a);
-      await testGetPolicy(e, [
+      expect(await e.getPolicy()).toEqual([
         ['alice', 'data1', 'read'],
         ['bob', 'data2', 'write'],
         ['data2_admin', 'data2', 'read'],

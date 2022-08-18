@@ -1,7 +1,7 @@
-export { TypeORMAdapterOptions } from './adapter';
+export { MikroORMAdapterOptions } from './adapter';
 export * from './casbinMongoRule';
 export * from './casbinRule';
 
-import TypeORMAdapter from './adapter';
+import MikroORMAdapter from './adapter';
 
-export default TypeORMAdapter;
+export default MikroORMAdapter;

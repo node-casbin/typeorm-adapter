@@ -12,49 +12,48 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from 'typeorm';
-
+import { Entity, BaseEntity, Property, PrimaryKey } from '@mikro-orm/core';
 @Entity()
-export class CasbinRule extends BaseEntity {
-  @PrimaryGeneratedColumn()
+export class CasbinRule extends BaseEntity<CasbinRule, 'id'> {
+  @PrimaryKey()
   public id: number;
 
-  @Column({
+  @Property({
     nullable: true,
   })
   public ptype: string;
 
-  @Column({
+  @Property({
     nullable: true,
   })
   public v0: string;
 
-  @Column({
+  @Property({
     nullable: true,
   })
   public v1: string;
 
-  @Column({
+  @Property({
     nullable: true,
   })
   public v2: string;
 
-  @Column({
+  @Property({
     nullable: true,
   })
   public v3: string;
 
-  @Column({
+  @Property({
     nullable: true,
   })
   public v4: string;
 
-  @Column({
+  @Property({
     nullable: true,
   })
   public v5: string;
 
-  @Column({
+  @Property({
     nullable: true,
   })
   public v6: string;

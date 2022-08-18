@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { Enforcer, Util } from 'casbin';
-import TypeORMAdapter from '../src/index';
+import MikroORMAdapter from '../src/index';
 import { connectionConfig } from './config';
 
 async function testGetPolicy(e: Enforcer, res: string[][]) {
@@ -32,7 +32,7 @@ async function testGetFilteredPolicy(e: Enforcer, res: string[]) {
 test(
   'TestAdapter',
   async () => {
-    const a = await TypeORMAdapter.newAdapter(connectionConfig);
+    const a = await MikroORMAdapter.newAdapter(connectionConfig);
     try {
       // Because the DB is empty at first,
       // so we need to load the policy from the file adapter (.CSV) first.
@@ -46,6 +46,9 @@ test(
       // This is a trick to save the current policy to the DB.
       // We can't call e.savePolicy() because the adapter in the enforcer is still the file adapter.
       // The current policy means the policy in the Node-Casbin enforcer (aka in memory).
+      const orm = a.getOrm();
+      const generator = orm.getSchemaGenerator();
+      await generator.refreshDatabase();
       await a.savePolicy(e.getModel());
 
       // Clear the current policy.
@@ -77,8 +80,11 @@ test(
       ]);
 
       // load filtered policies
+      e.clearPolicy();
       await a.loadFilteredPolicy(e.getModel(), { ptype: 'p', v0: 'alice' });
-      await testGetFilteredPolicy(e, ['alice', 'data1', 'read']);
+      expect(await e.getFilteredNamedPolicy('p', 0, 'alice')).toEqual([
+        ['alice', 'data1', 'read'],
+      ]);
 
       // Add policy to DB
       await a.addPolicy('', 'p', ['role', 'res', 'action']);
@@ -118,7 +124,7 @@ test(
       await a.removePolicy('', 'p', ['role', 'res', 'action']);
       e = new Enforcer();
       await e.initWithAdapter('examples/rbac_model.conf', a);
-      await testGetPolicy(e, [
+      expect(await e.getPolicy()).toEqual([
         ['alice', 'data1', 'read'],
         ['bob', 'data2', 'write'],
         ['data2_admin', 'data2', 'read'],

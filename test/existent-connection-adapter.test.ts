@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import { MikroORM } from '@mikro-orm/core';
 import { Enforcer, Util } from 'casbin';
-import { createConnection } from 'typeorm';
 import TypeORMAdapter, { CasbinRule } from '../src/index';
 import { connectionConfig } from './config';
 
@@ -33,10 +33,9 @@ async function testGetFilteredPolicy(e: Enforcer, res: string[]) {
 test(
   'TestAdapter',
   async () => {
-    const connection = await createConnection({
+    const connection = await MikroORM.init({
       ...connectionConfig,
-      entities: [CasbinRule],
-      synchronize: true,
+      entities: [CasbinRule]
     });
     const a = await TypeORMAdapter.newAdapter({ connection });
     try {

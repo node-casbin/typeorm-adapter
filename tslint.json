@@ -15,7 +15,12 @@
     "no-empty": false,
     "quotemark": [true, "single"],
     "trailing-comma": false,
-    "max-line-length": false
+    "max-line-length": false,
+    "variable-name": {
+      "options": [
+        "allow-leading-underscore"
+      ]
+    }
   },
   "rulesDirectory": []
 }

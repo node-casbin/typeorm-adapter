@@ -12,49 +12,53 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { BaseEntity, Column, Entity, ObjectID, ObjectIdColumn } from 'typeorm';
+import { BaseEntity, Property, Entity, PrimaryKey, SerializedPrimaryKey } from '@mikro-orm/core';
+import { ObjectId } from '@mikro-orm/mongodb';
 
 @Entity()
-export class CasbinMongoRule extends BaseEntity {
-  @ObjectIdColumn()
-  public id!: ObjectID;
+export class CasbinMongoRule extends BaseEntity<CasbinMongoRule, 'id'> {
+  @PrimaryKey()
+  public _id: ObjectId;
 
-  @Column({
+  @SerializedPrimaryKey()
+  public id!: string;
+
+  @Property({
     nullable: true,
   })
   public ptype!: string;
 
-  @Column({
+  @Property({
     nullable: true,
   })
   public v0!: string;
 
-  @Column({
+  @Property({
     nullable: true,
   })
   public v1!: string;
 
-  @Column({
+  @Property({
     nullable: true,
   })
   public v2!: string;
 
-  @Column({
+  @Property({
     nullable: true,
   })
   public v3!: string;
 
-  @Column({
+  @Property({
     nullable: true,
   })
   public v4!: string;
 
-  @Column({
+  @Property({
     nullable: true,
   })
   public v5!: string;
 
-  @Column({
+  @Property({
     nullable: true,
   })
   public v6!: string;

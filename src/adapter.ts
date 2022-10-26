@@ -119,7 +119,7 @@ export default class TypeORMAdapter implements FilteredAdapter {
     const result =
       line.ptype +
       ', ' +
-      [line.v0, line.v1, line.v2, line.v3, line.v4, line.v5, line.v6]
+      [line.v0, line.v1, line.v2, line.v3, line.v4, line.v5, line.v6, line.v7, line.v8]
         .filter((n) => n)
         .map((n) => `"${n}"`)
         .join(', ');
@@ -174,7 +174,12 @@ export default class TypeORMAdapter implements FilteredAdapter {
     if (rule.length > 6) {
       line.v6 = rule[6];
     }
-
+    if (rule.length > 7) {
+      line.v7 = rule[7];
+    }
+    if (rule.length > 8) {
+      line.v8 = rule[8];
+    }
     return line;
   }
 
@@ -326,7 +331,12 @@ export default class TypeORMAdapter implements FilteredAdapter {
     if (fieldIndex <= 6 && 6 < fieldIndex + fieldValues.length) {
       line.v6 = fieldValues[6 - fieldIndex];
     }
-
+    if (fieldIndex <= 7 && 7 < fieldIndex + fieldValues.length) {
+      line.v7 = fieldValues[7 - fieldIndex];
+    }
+    if (fieldIndex <= 8 && 8 < fieldIndex + fieldValues.length) {
+      line.v8 = fieldValues[8 - fieldIndex];
+    }
     await this.getRepository().delete({
       ...line,
     });

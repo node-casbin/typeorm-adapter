@@ -58,4 +58,12 @@ export class CasbinRule extends BaseEntity {
     nullable: true,
   })
   public v6: string;
+  @Column({
+    nullable: true,
+  })
+  public v7: string;
+  @Column({
+    nullable: true,
+  })
+  public v8: string;
 }

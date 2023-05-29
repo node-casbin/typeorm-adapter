@@ -303,28 +303,28 @@ export default class TypeORMAdapter implements FilteredAdapter {
   ) {
     const line = new (this.getCasbinRuleConstructor())();
 
-    line.ptype = ptype;
+    ptype && (line.ptype = ptype);
 
     if (fieldIndex <= 0 && 0 < fieldIndex + fieldValues.length) {
-      line.v0 = fieldValues[0 - fieldIndex];
+      fieldValues[0 - fieldIndex] && (line.v0 = fieldValues[0 - fieldIndex]);
     }
     if (fieldIndex <= 1 && 1 < fieldIndex + fieldValues.length) {
-      line.v1 = fieldValues[1 - fieldIndex];
+      fieldValues[1 - fieldIndex] && (line.v1 = fieldValues[1 - fieldIndex]);
     }
     if (fieldIndex <= 2 && 2 < fieldIndex + fieldValues.length) {
-      line.v2 = fieldValues[2 - fieldIndex];
+      fieldValues[2 - fieldIndex] && (line.v2 = fieldValues[2 - fieldIndex]);
     }
     if (fieldIndex <= 3 && 3 < fieldIndex + fieldValues.length) {
-      line.v3 = fieldValues[3 - fieldIndex];
+      fieldValues[3 - fieldIndex] && (line.v3 = fieldValues[3 - fieldIndex]);
     }
     if (fieldIndex <= 4 && 4 < fieldIndex + fieldValues.length) {
-      line.v4 = fieldValues[4 - fieldIndex];
+      fieldValues[4 - fieldIndex] && (line.v4 = fieldValues[4 - fieldIndex]);
     }
     if (fieldIndex <= 5 && 5 < fieldIndex + fieldValues.length) {
-      line.v5 = fieldValues[5 - fieldIndex];
+      fieldValues[5 - fieldIndex] && (line.v5 = fieldValues[5 - fieldIndex]);
     }
     if (fieldIndex <= 6 && 6 < fieldIndex + fieldValues.length) {
-      line.v6 = fieldValues[6 - fieldIndex];
+      fieldValues[6 - fieldIndex] && (line.v6 = fieldValues[6 - fieldIndex]);
     }
 
     await this.getRepository().delete({

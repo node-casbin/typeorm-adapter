@@ -195,11 +195,13 @@ export default class TypeORMAdapter implements FilteredAdapter {
     }
 
     astMap = model.model.get('g');
-    // @ts-ignore
-    for (const [ptype, ast] of astMap) {
-      for (const rule of ast.policy) {
-        const line = this.savePolicyLine(ptype, rule);
-        lines.push(line);
+    if (astMap) {
+      // @ts-ignore
+      for (const [ptype, ast] of astMap) {
+        for (const rule of ast.policy) {
+          const line = this.savePolicyLine(ptype, rule);
+          lines.push(line);
+        }
       }
     }
 

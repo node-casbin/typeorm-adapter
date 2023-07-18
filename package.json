@@ -8,7 +8,7 @@
     "precommit": "lint-staged",
     "prepublish": "yarn run lint && yarn build",
     "build": "rimraf lib && tsc",
-    "coverage": "jest --coverage",
+    "coverage": "jest --coverage --runInBand",
     "lint": "tslint \"src/**/*.ts\"",
     "fix": "tslint \"src/**/*.ts\" --fix",
     "test": "jest --runInBand",

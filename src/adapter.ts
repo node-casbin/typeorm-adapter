@@ -21,7 +21,7 @@ import {
   Repository,
 } from 'typeorm';
 import { CasbinMongoRule } from './casbinMongoRule';
-import "reflect-metadata";
+import 'reflect-metadata';
 
 type GenericCasbinRule = CasbinRule | CasbinMongoRule;
 type CasbinRuleConstructor = new (...args: any[]) => GenericCasbinRule;
@@ -95,12 +95,12 @@ export default class TypeORMAdapter implements FilteredAdapter {
     await a.open();
     if (option.tableName) {
       const metadata = Reflect.getMetadata(
-        "typeorm:entity-metadata",
+        'typeorm:entity-metadata',
         CasbinRule
       );
       metadata.tableName = option.tableName;
       Reflect.defineMetadata(
-        "typeorm:entity-metadata",
+        'typeorm:entity-metadata',
         metadata,
         CasbinRule
       );

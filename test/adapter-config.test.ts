@@ -22,7 +22,7 @@ import {
 import TypeORMAdapter, { CasbinRule } from '../src/index';
 import { connectionConfig } from './config';
 
-@Entity('custom_rule')
+@Entity({ name: "my_casbin_rule" })
 class CustomCasbinRule extends CasbinRule {
   @CreateDateColumn()
   public createdDate: Date;

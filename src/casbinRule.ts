@@ -14,7 +14,7 @@
 
 import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from 'typeorm';
 
-@Entity({ name: 'my_casbin_rule' })
+@Entity()
 export class CasbinRule extends BaseEntity {
   @PrimaryGeneratedColumn()
   public id: number;

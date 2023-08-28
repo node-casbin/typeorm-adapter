@@ -136,8 +136,7 @@ async function myFunction() {
     // The adapter can not automatically create database.
     // But the adapter will automatically and use the table named "casbin_rule".
     // I think ORM should not automatically create databases.  
-    const a = await TypeORMAdapter.newAdapter(
-      {
+    const a = await TypeORMAdapter.newAdapter({
         type: 'mysql',
         host: 'localhost',
         port: 3306,
@@ -169,6 +168,73 @@ async function myFunction() {
     await e.savePolicy();
 }
 ```
+## Custom Database Table Name Example
+If you want to use a custom table name for the casbin rules, you need to:
+Create a custom entity class that inherits from CasbinRule and uses the @Entity decorator with your table name.
+Pass the custom entity class to the entities array of the data source constructor.
+Pass the custom entity class to the customCasbinRuleEntity option of the typeorm-adapter constructor.
+
+```typescript
+import { newEnforcer } from 'casbin';
+import {
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import TypeORMAdapter from 'typeorm-adapter';
+
+@Entity('custom_rule')
+class CustomCasbinRule extends CasbinRule {
+  @CreateDateColumn()
+  createdDate: Date;
+
+  @UpdateDateColumn()
+  updatedDate: Date;
+}
+
+async function myFunction() {
+    // Initialize a TypeORM adapter and use it in a Node-Casbin enforcer:
+    // The adapter can not automatically create database.
+    // But the adapter will automatically and use the table named "casbin_rule".
+    // I think ORM should not automatically create databases.  
+
+    const datasource = new DataSource({
+        type: 'mysql',
+        host: 'localhost',
+        port: 3306,
+        username: 'root',
+        password: '',
+        database: 'casbin',
+        entities: [CustomCasbinRule],
+        synchronize: true,
+    });
+
+    await TypeORMAdapter.newAdapter(
+      { connection: datasource },
+      {
+        customCasbinRuleEntity: CustomCasbinRule,
+      },
+    );
+
+    const e = await newEnforcer('examples/rbac_model.conf', a);
+
+    // Load the filtered policy from DB.
+    await e.loadFilteredPolicy({
+        'ptype': 'p',
+        'v0': 'alice'
+    });
+
+    // Check the permission.
+    await e.enforce('alice', 'data1', 'read');
+
+    // Modify the policy.
+    // await e.addPolicy(...);
+    // await e.removePolicy(...);
+
+    // Save the policy back to DB.
+    await e.savePolicy();
+}
+```
+
 ## Getting Help
 
 - [Node-Casbin](https://github.com/casbin/node-casbin)

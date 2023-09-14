@@ -359,8 +359,9 @@ export default class TypeORMAdapter implements FilteredAdapter {
 
   /**
    * Returns either a {@link CasbinRule} or a {@link CasbinMongoRule}, depending on the type. If passed a custom entity through the adapter config it will use that entity type.
-   * This switch is required as the normal {@link CasbinRule} does not work when using MongoDB as a backend (due to a missing ObjectID field).
+   * This switch is required as the normal {@link CasbinRule} does not work when using MongoDB as a backend (due to a missing ObjectId field).
    * @param type
+   * @param adapterConfig
    */
   private static getCasbinRuleType(
     type: string,

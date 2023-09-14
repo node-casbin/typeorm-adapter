@@ -12,10 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Enforcer, Util } from 'casbin';
+import {Enforcer, setDefaultFileSystem, Util} from 'casbin';
 import { DataSource } from 'typeorm';
 import TypeORMAdapter, { CasbinRule } from '../src/index';
 import { connectionConfig } from './config';
+
+import * as fs from 'fs';
+setDefaultFileSystem(fs as any);
 
 async function testGetPolicy(e: Enforcer, res: string[][]) {
   const myRes = await e.getPolicy();

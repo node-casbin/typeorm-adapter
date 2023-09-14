@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Enforcer } from 'casbin';
+import {Enforcer, setDefaultFileSystem} from 'casbin';
 import {
   CreateDateColumn,
   DataSource,
@@ -21,6 +21,9 @@ import {
 } from 'typeorm';
 import TypeORMAdapter, { CasbinRule } from '../src/index';
 import { connectionConfig } from './config';
+
+import * as fs from 'fs';
+setDefaultFileSystem(fs as any);
 
 @Entity('custom_rule')
 class CustomCasbinRule extends CasbinRule {

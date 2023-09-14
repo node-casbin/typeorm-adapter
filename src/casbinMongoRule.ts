@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { BaseEntity, Column, Entity, ObjectID, ObjectIdColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, ObjectId, ObjectIdColumn } from 'typeorm';
 
 @Entity()
 export class CasbinMongoRule extends BaseEntity {
   @ObjectIdColumn()
-  public id!: ObjectID;
+  public id!: ObjectId;
 
   @Column({
     nullable: true,

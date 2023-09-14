@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 export { TypeORMAdapterOptions } from './adapter';
 export * from './casbinMongoRule';
 export * from './casbinRule';

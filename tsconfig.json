@@ -1,15 +1,29 @@
 {
   "compilerOptions": {
+    "module": "esnext",
     "target": "es6",
-    "module": "commonjs",
+    "jsx": "react",
     "moduleResolution": "node",
-    "declaration": true,
-    "declarationDir": "lib",
-    "strict": true,
-    "outDir": "lib",
-    "strictPropertyInitialization": false,
     "experimentalDecorators": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "resolveJsonModule": true,
+    "strictNullChecks": true,
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": false,
+    "strictPropertyInitialization": false,
+    "noEmit": true,
     "emitDecoratorMetadata": true
   },
-  "include": ["src/**/*.ts"]
+  "include": [
+    "src"
+  ]
 }

@@ -41,7 +41,7 @@ import TypeORMAdapter from 'typeorm-adapter';
 async function myFunction() {
     // Initialize a TypeORM adapter and use it in a Node-Casbin enforcer:
     // The adapter can not automatically create database.
-    // But the adapter will automatically and use the table named "casbin_rule".
+    // But the adapter will automatically create and use the table named "casbin_rule".
     // I think ORM should not automatically create databases.  
     const a = await TypeORMAdapter.newAdapter({
         type: 'mysql',
@@ -79,7 +79,7 @@ import TypeORMAdapter from 'typeorm-adapter';
 async function myFunction() {
     // Initialize a TypeORM adapter and use it in a Node-Casbin enforcer:
     // The adapter can not automatically create database.
-    // But the adapter will automatically and use the table named "casbin_rule".
+    // But the adapter will automatically create and use the table named "casbin_rule".
     // I think ORM should not automatically create databases.  
     const a = await TypeORMAdapter.newAdapter({
         type: 'mysql',
@@ -134,7 +134,7 @@ class CustomCasbinRule extends CasbinRule {
 async function myFunction() {
     // Initialize a TypeORM adapter and use it in a Node-Casbin enforcer:
     // The adapter can not automatically create database.
-    // But the adapter will automatically and use the table named "casbin_rule".
+    // But the adapter will automatically create and use the table named "casbin_rule".
     // I think ORM should not automatically create databases.  
     const a = await TypeORMAdapter.newAdapter({
         type: 'mysql',
@@ -194,7 +194,7 @@ class CustomCasbinRule extends CasbinRule {
 async function myFunction() {
     // Initialize a TypeORM adapter and use it in a Node-Casbin enforcer:
     // The adapter can not automatically create database.
-    // But the adapter will automatically and use the table named "casbin_rule".
+    // But the adapter will automatically create and use the table named "casbin_rule".
     // I think ORM should not automatically create databases.  
 
     const datasource = new DataSource({

@@ -208,7 +208,7 @@ async function myFunction() {
         synchronize: true,
     });
 
-    await TypeORMAdapter.newAdapter(
+    const a = await TypeORMAdapter.newAdapter(
       { connection: datasource },
       {
         customCasbinRuleEntity: CustomCasbinRule,

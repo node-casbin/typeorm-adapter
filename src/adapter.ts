@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Helper, Model, FilteredAdapter } from 'casbin';
+import { Helper, Model, FilteredAdapter, UpdatableAdapter } from 'casbin';
 import { CasbinRule } from './casbinRule';
 import {
   DataSource,
@@ -37,7 +37,9 @@ export interface TypeORMAdapterConfig {
 /**
  * TypeORMAdapter represents the TypeORM filtered adapter for policy storage.
  */
-export default class TypeORMAdapter implements FilteredAdapter {
+export default class TypeORMAdapter
+  implements FilteredAdapter, UpdatableAdapter
+{
   private adapterConfig?: TypeORMAdapterConfig;
   private option: DataSourceOptions;
   private typeorm: DataSource;
@@ -255,6 +257,34 @@ export default class TypeORMAdapter implements FilteredAdapter {
     } finally {
       await queryRunner.release();
     }
+  }
+
+  async updatePolicy(
+    sec: string,
+    ptype: string,
+    oldRule: string[],
+    newRule: string[],
+  ): Promise<void> {
+    const { v0, v1, v2, v3, v4, v5, v6 } = this.savePolicyLine(ptype, oldRule);
+    const newLine = this.savePolicyLine(ptype, newRule);
+
+    const foundLine = await this.getRepository().findOneOrFail({
+      where: {
+        ptype,
+        v0,
+        v1,
+        v2,
+        v3,
+        v4,
+        v5,
+        v6,
+      },
+    });
+
+    await this.getRepository().save({
+      ...foundLine,
+      ...newLine,
+    });
   }
 
   /**

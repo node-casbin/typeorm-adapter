@@ -9,8 +9,8 @@
     "prepublish": "yarn run lint && yarn build",
     "build": "rimraf lib && tsc",
     "coverage": "jest --coverage --runInBand",
-    "lint": "eslint src/**/*.{ts,tsx,js,jsx}",
-    "fix": "eslint src/**/*.{ts,tsx,js,jsx} --fix",
+    "lint": "eslint \"src/**/*.{ts,js,jsx}\"",
+    "fix": "eslint \"src/**/*.{ts,js,jsx}\" --fix",
     "test": "jest --runInBand",
     "release": "npx -p semantic-release -p @semantic-release/git -p @semantic-release/changelog semantic-release",
     "prepare": "npm run build"
@@ -28,6 +28,7 @@
     "mysql2": "^2.1.0",
     "pg": "^8.4.2",
     "rimraf": "^2.6.2",
+    "sqlite3": "^5.1.7",
     "ts-jest": "28.0.7",
     "typescript": "^5.2.2"
   },

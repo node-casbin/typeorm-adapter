@@ -12,11 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Enforcer, setDefaultFileSystem} from 'casbin';
+import { Enforcer, setDefaultFileSystem } from 'casbin';
 import {
   CreateDateColumn,
   DataSource,
   Entity,
+  EntityNotFoundError,
   UpdateDateColumn,
 } from 'typeorm';
 import TypeORMAdapter, { CasbinRule } from '../src/index';
@@ -64,9 +65,36 @@ test(
       // The current policy means the policy in the Node-Casbin enforcer (aka in memory).
       await a.savePolicy(e.getModel());
 
-      const rules = await datasource.getRepository(CustomCasbinRule).find();
+      const repository = datasource.getRepository(CustomCasbinRule);
+      const rules = await repository.find();
       expect(rules[0].createdDate).not.toBeFalsy();
       expect(rules[0].updatedDate).not.toBeFalsy();
+
+      // Verify update method works
+      const initialPolicy = ['bob', 'data3', 'write'];
+      const updatedPolicy = ['bob', 'data3', 'read'];
+      const getCurrentPolicyLinesFromDB = async () => {
+        const policyRow = await repository.findOneByOrFail({
+          v0: initialPolicy[0],
+          v1: initialPolicy[1],
+        });
+        return [policyRow.v0, policyRow.v1, policyRow.v2];
+      };
+
+      await a.addPolicy('', 'p', initialPolicy);
+      expect(await getCurrentPolicyLinesFromDB()).toMatchObject(initialPolicy);
+
+      await a.updatePolicy('', 'p', initialPolicy, updatedPolicy);
+      expect(await getCurrentPolicyLinesFromDB()).toMatchObject(updatedPolicy);
+
+      // We expect that we won't find a read policy anymore
+      await expect(
+        repository.findOneByOrFail({
+          v0: initialPolicy[0],
+          v1: initialPolicy[1],
+          v2: initialPolicy[2],
+        }),
+      ).rejects.toThrow(EntityNotFoundError);
     } finally {
       a.close();
     }

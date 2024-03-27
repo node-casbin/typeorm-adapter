@@ -8,9 +8,9 @@ TypeORM Adapter
 [![Discord](https://img.shields.io/discord/1022748306096537660?logo=discord&label=discord&color=5865F2)](https://discord.gg/S5UjpzGZjN)
 
 [npm-image]: https://img.shields.io/npm/v/typeorm-adapter.svg?style=flat-square
-[npm-url]: https://npmjs.org/package/typeorm-adapter
+[npm-url]: https://npmjs.com/package/typeorm-adapter
 [download-image]: https://img.shields.io/npm/dm/typeorm-adapter.svg?style=flat-square
-[download-url]: https://npmjs.org/package/typeorm-adapter
+[download-url]: https://npmjs.com/package/typeorm-adapter
 
 TypeORM Adapter is the [TypeORM](https://github.com/typeorm/typeorm) adapter for [Node-Casbin](https://github.com/casbin/node-casbin). With this library, Node-Casbin can load policy from TypeORM supported database or save policy to it.
 

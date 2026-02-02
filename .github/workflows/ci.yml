@@ -1,15 +1,21 @@
 name: CI
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - master
+  pull_request:
 
 jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v2.1.5
+        uses: actions/setup-node@v4
+        with:
+          node-version: ^20
 
       - name: Install Dependency
         run: yarn install
@@ -24,7 +30,7 @@ jobs:
     needs: [lint]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Setup MySQL
         uses: mirromutth/mysql-action@v1.1
@@ -33,7 +39,7 @@ jobs:
           mysql root password: password
 
       - name: Set up Node.js
-        uses: actions/setup-node@v2.1.5
+        uses: actions/setup-node@v4
         with:
           node-version: ^20
 
@@ -44,7 +50,7 @@ jobs:
         run: yarn run coverage
 
       - name: Coveralls
-        uses: coverallsapp/github-action@master
+        uses: coverallsapp/github-action@v2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           parallel: true
@@ -54,9 +60,9 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: [^18, ^20]
+        node: [^20]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Setup MySQL
         uses: mirromutth/mysql-action@v1.1
@@ -65,7 +71,7 @@ jobs:
           mysql root password: password
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
 
@@ -79,10 +85,10 @@ jobs:
     needs: [lint, test, coverage]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ^20
 

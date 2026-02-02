@@ -10,6 +10,8 @@ jobs:
 
       - name: Set up Node.js
         uses: actions/setup-node@v2.1.5
+        with:
+          node-version: ^20
 
       - name: Install Dependency
         run: yarn install
@@ -54,7 +56,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: [^18, ^20]
+        node: [^20]
     steps:
       - uses: actions/checkout@v2
 
